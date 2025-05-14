@@ -15,9 +15,4 @@ class ExampleViewModel implements ArgumentInterface
     {
         return $this->scopeConfig->getValue('general/store_information/name') ?? '';
     }
-
-    public function getStorePhoneNumber(): string
-    {
-        return $this->scopeConfig->getValue('general/store_information/phone') ?? '';
-    }
 }
