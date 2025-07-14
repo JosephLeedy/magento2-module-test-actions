@@ -21,6 +21,7 @@ jobs:
         run: /bin/bash /data/start-services
 
       - name: Change Magento URL
+        working-directory: /data
         run: /bin/bash /data/change-base-url http://magento.test/
 
       - name: Copy extension to Magento codebase
