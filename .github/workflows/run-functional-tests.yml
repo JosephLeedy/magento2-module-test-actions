@@ -22,7 +22,7 @@ jobs:
 
       - name: Change Magento URL
         working-directory: /data
-        run: /bin/bash /data/change-base-url http://magento.test/
+        run: /bin/bash /data/change-base-url http://magento.test/ && echo "127.0.0.1 magento.test" >> /etc/hosts
 
       - name: Copy extension to Magento codebase
         run: mkdir /data/extensions/module-test-actions && cp -r . /data/extensions/module-test-actions
