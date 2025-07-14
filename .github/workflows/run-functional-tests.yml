@@ -35,7 +35,7 @@ jobs:
 
       - name: Enable extension
         working-directory: /data
-        run: php bin/magento module:enable JosephLeedy_CustomFees
+        run: php bin/magento module:enable JosephLeedy_TestActions
 
       - name: Install database schema
         working-directory: /data
