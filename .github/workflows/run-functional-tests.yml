@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: michielgerritsen/magento-project-community-edition:php84-fpm-magento-2.4.8-p1-sample-data
+      image: michielgerritsen/magento-project-community-edition:php84-fpm-magento2.4.8-p1-sample-data
 
     steps:
       - name: Check out repository
