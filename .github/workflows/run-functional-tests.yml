@@ -1,0 +1,85 @@
+name: Run Functional Tests
+on:
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  run-functional-tests:
+    timeout-minutes: 60
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: michielgerritsen/magento-project-community-edition:php84-fpm-magento-2.4.8-p1-sample-data
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Start services
+        run: /bin/bash /data/start-services
+
+      - name: Change Magento URL
+        run: /bin/bash /data/change-base-url http://magento.test/
+
+      - name: Copy extension to Magento codebase
+        run: mkdir /data/extensions/module-test-actions && cp -r . /data/extensions/module-test-actions
+
+      - name: Install extension
+        working-directory: /data
+        run: |
+          composer config repo.packagist false
+          composer require joseph-leedy/module-test-actions:@dev
+
+      - name: Enable extension
+        working-directory: /data
+        run: php bin/magento module:enable JosephLeedy_CustomFees
+
+      - name: Install database schema
+        working-directory: /data
+        run: php bin/magento setup:upgrade
+
+      - name: Recompile generated classes
+        working-directory: /data
+        run: rm -rf "generated/*"; php bin/magento setup:di:compile
+
+      - name: Create test admin user
+        working-directory: /data
+        run: |
+          php bin/magento admin:user:create --admin-user=e2e_test_admin --admin-password=P@55w0rd \
+          --admin-email=e2e_test_admin@magento.test --admin-firstname=Test --admin-lastname=Admin
+
+      - name: Install test dependencies
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        run: npm i
+
+      - name: Configure environment variables
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        run: rm -f .env && cp .env.ci .env
+
+      - name: Apply patches
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        run: |
+          patch -p0 < patches/playwright.config.ts.patch
+          patch -p0 < patches/bypass-captcha.config.ts.patch
+
+      - name: Install test browsers
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        run: npx -y playwright install --with-deps
+
+      - name: Prepare Magento to run tests
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        run: npx playwright test --workers=1 --reporter=dot,github --grep '@setup'
+
+      - name: Run tests
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        run: npx playwright test --workers=1 --reporter=dot,github --grep '@frontend|@admin' --pass-with-no-tests
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        working-directory: /data/extensions/module-test-actions/test/Functional
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
