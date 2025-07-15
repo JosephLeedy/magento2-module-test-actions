@@ -32,6 +32,7 @@ jobs:
         working-directory: /data
         run: |
           php bin/magento config:set admin/usage/enabled 0
+          php bin/magento cache:clean config full_page
 
       - name: Disable two-factor authentication in Magento Admin
         working-directory: /data
