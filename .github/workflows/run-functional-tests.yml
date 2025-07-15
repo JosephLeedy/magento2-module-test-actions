@@ -24,6 +24,12 @@ jobs:
         working-directory: /data
         run: /bin/bash /data/change-base-url http://magento.test/ && echo "127.0.0.1 magento.test" >> /etc/hosts
 
+      - name: Disable two-factor authentication in Magento Admin
+        working-directory: /data
+        run: |
+          composer require --dev markshust/magento2-module-disabletwofactorauth && \
+          php bin/magento module:enable MarkShust_DisableTwoFactorAuth
+
       - name: Copy extension to Magento codebase
         run: mkdir /data/extensions/module-test-actions && cp -r . /data/extensions/module-test-actions
 
