@@ -101,4 +101,4 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: /data/playwright-report/
+          path: /data/extensions/module-test-actions/test/Functional/playwright-report/
