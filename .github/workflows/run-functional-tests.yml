@@ -71,7 +71,7 @@ jobs:
 
       - name: Prepare Magento to run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
-        run: npx playwright test --workers=1 --reporter=dot,github --grep '@setup'
+        run: npx playwright test --workers=1 --reporter=dot,github --grep '@setup' --grep-invert '@hot'
 
       - name: Run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
