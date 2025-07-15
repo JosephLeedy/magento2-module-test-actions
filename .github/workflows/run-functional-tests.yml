@@ -73,6 +73,8 @@ jobs:
 
       - name: Install test browsers
         working-directory: /data/extensions/module-test-actions/test/Functional
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
         run: npx -y playwright install --with-deps
 
       - name: Prepare Magento to run tests
