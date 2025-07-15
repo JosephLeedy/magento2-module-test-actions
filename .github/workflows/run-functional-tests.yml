@@ -71,11 +71,11 @@ jobs:
 
       - name: Prepare Magento to run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
-        run: npx playwright test --workers=1 --reporter=dot,github --grep '@setup' --grep-invert '@hot'
+        run: npx playwright test --workers=1 --reporter=dot,github,html --grep '@setup' --grep-invert '@hot'
 
       - name: Run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
-        run: npx playwright test --workers=1 --reporter=dot,github --grep '@frontend|@admin' --pass-with-no-tests
+        run: npx playwright test --workers=1 --reporter=dot,github,html --grep '@frontend|@admin' --pass-with-no-tests
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
