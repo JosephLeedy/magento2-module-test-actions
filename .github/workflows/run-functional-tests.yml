@@ -14,6 +14,9 @@ jobs:
       image: michielgerritsen/magento-project-community-edition:php84-fpm-magento2.4.8-p1-sample-data
       options: --user root
 
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -74,8 +77,6 @@ jobs:
 
       - name: Install test browsers
         working-directory: /data/extensions/module-test-actions/test/Functional
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
         run: npx -y playwright install --with-deps
 
       - name: Prepare Magento to run tests
