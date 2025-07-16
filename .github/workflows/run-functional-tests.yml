@@ -16,7 +16,6 @@ jobs:
 
     env:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
-      HOME: /root
 
     steps:
       - name: Check out repository
@@ -88,6 +87,8 @@ jobs:
       - name: Prepare Magento to run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
         continue-on-error: true
+        env:
+          HOME: /root
         run: |
           npx playwright test --workers=1 --reporter=dot --grep '@setup' --grep-invert '@hot'
           # Create Chromium test customer if setup test failed
@@ -96,6 +97,8 @@ jobs:
 
       - name: Run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
+        env:
+          HOME: /root
         run: npx playwright test --workers=1 --reporter=dot,github,html --grep '@frontend|@admin' --pass-with-no-tests
 
       - name: Upload test report
