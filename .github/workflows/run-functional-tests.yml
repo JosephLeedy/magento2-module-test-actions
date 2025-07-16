@@ -12,7 +12,7 @@ jobs:
 
     container:
       image: michielgerritsen/magento-project-community-edition:php84-fpm-magento2.4.8-p1-sample-data
-      options: --user root --env "HOME=/root"
+      options: --user root
 
     env:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
