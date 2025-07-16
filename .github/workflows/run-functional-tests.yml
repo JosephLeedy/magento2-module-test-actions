@@ -79,6 +79,7 @@ jobs:
         run: |
           patch -p0 < patches/playwright.config.ts.patch
           patch -p0 < patches/bypass-captcha.config.ts.patch
+          patch -p0 < patches/register.page.ts.patch
 
       - name: Install test browsers
         working-directory: /data/extensions/module-test-actions/test/Functional
