@@ -16,6 +16,7 @@ jobs:
 
     env:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
+      HOME: /root
 
     steps:
       - name: Check out repository
