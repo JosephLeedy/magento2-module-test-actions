@@ -88,7 +88,11 @@ jobs:
       - name: Prepare Magento to run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
         continue-on-error: true
-        run: npx playwright test --workers=1 --reporter=dot --grep '@setup' --grep-invert '@hot'
+        run: |
+          npx playwright test --workers=1 --reporter=dot --grep '@setup' --grep-invert '@hot'
+          # Create Chromium test customer if setup test failed
+          /usr/local/bin/n98-magerun2 customer:list e2e_user+chromium@magento.test | grep -q "No customers found" && \
+          /usr/local/bin/n98-magerun2 customer:create e2e_user+chromium@magento.test "P@55w0rd" Test Admin base
 
       - name: Run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
