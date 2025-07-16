@@ -18,6 +18,9 @@ jobs:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright-browsers
 
     steps:
+      - name: Fix home directory
+        run: echo "HOME=/root" >> "$GITHUB_ENV"
+
       - name: Check out repository
         uses: actions/checkout@v4
 
