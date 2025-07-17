@@ -92,7 +92,7 @@ jobs:
           npx playwright test --workers=1 --reporter=dot --grep '@setup' --grep-invert '@hot'
 
       - name: Perform post-preparation tasks
-        working-directory: /data/extensions/module-test-actions/test/Functional
+        working-directory: /data
         run: |
           # Create Chromium test customer if setup test failed
           /usr/local/bin/n98-magerun2 customer:list e2e_user+chromium@magento.test | grep -q "No customers found" && \
