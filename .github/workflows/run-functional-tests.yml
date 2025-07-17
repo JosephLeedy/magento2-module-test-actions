@@ -96,7 +96,7 @@ jobs:
             test -n "${THEME_ID}" && /usr/local/bin/n98-magerun2 config:set design/theme/theme_id "${THEME_ID}"
           php bin/magento config:set customer/captcha/enable 0
           # Configure Hyvä Checkout
-          php bin/magento hyva_themes_checkout/general/checkout default
+          php bin/magento config:set hyva_themes_checkout/general/checkout default
 
       - name: Copy extension to Magento codebase
         run: mkdir /data/extensions/module-test-actions && cp -r . /data/extensions/module-test-actions
