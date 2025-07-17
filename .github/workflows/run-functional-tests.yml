@@ -12,15 +12,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - hyva: false
-            hyva_csp: false
-            theme: Luma
-          - hyva: true
-            hyva_csp: false
-            theme: Hyvä
-          - hyva: true
-            hyva_csp: true
-            theme: Hyvä CSP
+          - theme: Luma
+          - theme: Hyvä
+          - theme: Hyvä CSP
 
     timeout-minutes: 60
 
@@ -56,7 +50,7 @@ jobs:
           php bin/magento module:enable MarkShust_DisableTwoFactorAuth
 
       - name: Install Hyvä theme
-        if: matrix.hyva
+        if: starts_with(matrix.theme, 'Hyvä')
         working-directory: /data
         run: |
           # Install Hyvä GitLab SSH key
@@ -86,7 +80,7 @@ jobs:
           /usr/local/bin/composer config hyva-themes/hyva-checkout-csp git \
             git@gitlab.hyva.io:hyva-checkout/checkout-csp.git
           # Install Hyvä theme
-          if ${{ matrix.hyva_csp }}; then
+          if [ "${{ matrix.theme }}" = "Hyvä CSP" ]; then
             /usr/local/bin/composer require hyva-themes/magento2-default-theme-csp
             /usr/local/bin/composer require hyva-themes/magento2-hyva-checkout-csp
             THEME_NAME="Hyva/default-csp"
