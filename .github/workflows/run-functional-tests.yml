@@ -50,7 +50,7 @@ jobs:
           php bin/magento module:enable MarkShust_DisableTwoFactorAuth
 
       - name: Install Hyvä theme
-        if: starts_with(matrix.theme, 'Hyvä')
+        if: startsWith(matrix.theme, 'Hyvä')
         working-directory: /data
         run: |
           # Install Hyvä GitLab SSH key
