@@ -85,14 +85,14 @@ jobs:
             /usr/local/bin/composer require hyva-themes/magento2-default-theme-csp
             /usr/local/bin/composer require hyva-themes/magento2-hyva-checkout-csp
             THEME_NAME="Hyva/default-csp"
-          else;
+          else
             /usr/local/bin/composer require hyva-themes/magento2-default-theme
             /usr/local/bin/composer require hyva-themes/magento2-hyva-checkout
             THEME_NAME="Hyva/default"
-          fi;
+          fi
           php bin/magento setup:upgrade
           # Configure Magento to use the Hyvä theme
-          THEME_ID="$(/usr/local/bin/n98-magerun2 dev:theme:list --format=csv | grep "$THEME_NAME" | cut -d, -f1)"; \
+          THEME_ID="$(/usr/local/bin/n98-magerun2 dev:theme:list --format=csv | grep $THEME_NAME | cut -d, -f1)"; \
             test -n "${THEME_ID}" && /usr/local/bin/n98-magerun2 config:set design/theme/theme_id "${THEME_ID}"
           php bin/magento config:set customer/captcha/enable 0
           # Configure Hyvä Checkout
