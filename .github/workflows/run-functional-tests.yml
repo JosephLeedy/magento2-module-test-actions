@@ -6,6 +6,22 @@ on:
 
 jobs:
   run-functional-tests:
+    name: ${{ matrix.theme }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - hyva: false
+            hyva_csp: false
+            theme: Luma
+          - hyva: true
+            hyva_csp: false
+            theme: Hyvä
+          - hyva: true
+            hyva_csp: true
+            theme: Hyvä CSP
+
     timeout-minutes: 60
 
     runs-on: ubuntu-latest
@@ -38,6 +54,54 @@ jobs:
         run: |
           composer require --dev markshust/magento2-module-disabletwofactorauth && \
           php bin/magento module:enable MarkShust_DisableTwoFactorAuth
+
+      - name: Install Hyvä theme
+        if: matrix.hyva
+        working-directory: /data
+        run: |
+          # Install Hyvä GitLab SSH key
+          mkdir /root/.ssh && chmod 700 /root/.ssh
+          touch /root/.ssh/id_ed25519 && chmod 600 /root/.ssh/id_ed25519
+          echo "::add-mask::${{ secrets.HYVA_GITLAB_KEY }}" > /root/.ssh/id_ed25519
+          touch /root/.ssh/known_hosts && chmod 600 /root/.ssh/known_hosts
+          ssh-keyscan -H gitlab.hyva.io > /root/.ssh/known_hosts
+          # Configure Hyvä Composer repositories
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-theme-module git \
+            git@gitlab.hyva.io:hyva-themes/magento2-theme-module.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-reset-theme git \
+            git@gitlab.hyva.io:hyva-themes/magento2-reset-theme.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-email-module git \
+            git@gitlab.hyva.io:hyva-themes/magento2-email-module.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-default-theme git \
+            git@gitlab.hyva.io:hyva-themes/magento2-default-theme.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-default-theme-csp git \
+            git@gitlab.hyva.io:hyva-themes/magento2-default-theme-csp.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-order-cancellation-webapi git \
+            git@gitlab.hyva.io:hyva-themes/magento2-order-cancellation-webapi.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-compat-module-fallback git \
+            git@gitlab.hyva.io:hyva-themes/magento2-compat-module-fallback.git
+          /usr/local/bin/composer config repositories.hyva-themes/magento2-mollie-theme-bundle git \
+            git@gitlab.hyva.io:hyva-themes/hyva-compat/magento2-mollie-theme-bundle.git
+          /usr/local/bin/composer config hyva-themes/hyva-checkout git git@gitlab.hyva.io:hyva-checkout/checkout.git
+          /usr/local/bin/composer config hyva-themes/hyva-checkout-csp git \
+            git@gitlab.hyva.io:hyva-checkout/checkout-csp.git
+          # Install Hyvä theme
+          if ${{ matrix.hyva_csp }}; then
+            /usr/local/bin/composer require hyva-themes/magento2-default-theme-csp
+            /usr/local/bin/composer require hyva-themes/magento2-hyva-checkout-csp
+            THEME_NAME="Hyva/default-csp"
+          else;
+            /usr/local/bin/composer require hyva-themes/magento2-default-theme
+            /usr/local/bin/composer require hyva-themes/magento2-hyva-checkout
+            THEME_NAME="Hyva/default"
+          fi;
+          php bin/magento setup:upgrade
+          # Configure Magento to use the Hyvä theme
+          THEME_ID="$(/usr/local/bin/n98-magerun2 dev:theme:list --format=csv | grep "$THEME_NAME" | cut -d, -f1)"; \
+            test -n "${THEME_ID}" && /usr/local/bin/n98-magerun2 config:set design/theme/theme_id "${THEME_ID}"
+          php bin/magento config:set customer/captcha/enable 0
+          # Configure Hyvä Checkout
+          php bin/magento hyva_themes_checkout/general/checkout default
 
       - name: Copy extension to Magento codebase
         run: mkdir /data/extensions/module-test-actions && cp -r . /data/extensions/module-test-actions
