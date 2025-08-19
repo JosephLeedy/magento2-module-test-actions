@@ -169,7 +169,7 @@ jobs:
       - name: Run tests
         working-directory: /data/extensions/module-test-actions/test/Functional
         run: |
-          npx playwright test --reporter=dot,github,blob --grep '@frontend|@admin' --pass-with-no-tests \
+          npx playwright test --reporter=dot,github,blob --grep-invert '@setup' \
             --shard=${{ matrix.shard-index }}/${{ matrix.shard-count }}
 
       - id: generate-artifact-name-suffix
