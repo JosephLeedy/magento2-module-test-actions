@@ -11,16 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - theme: Luma
-            shard-index: [0, 1, 2, 3]
-            shard-count: [4]
-          - theme: Hyvä
-            shard-index: [0, 1, 2, 3]
-            shard-count: [4]
-          - theme: Hyvä CSP
-            shard-index: [0, 1, 2, 3]
-            shard-count: [4]
+        theme: [Luma, Hyvä, Hyvä CSP]
+        shard-index: [0, 1, 2, 3]
+        shard-count: [4]
 
     timeout-minutes: 60
 
