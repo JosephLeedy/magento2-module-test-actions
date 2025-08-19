@@ -177,7 +177,7 @@ jobs:
           retention-days: 1
 
   merge-reports:
-    name: Merge test reports
+    name: Merge ${{ matrix.theme }} test reports
 
     if: ${{ !cancelled() }}
 
