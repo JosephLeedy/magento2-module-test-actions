@@ -208,21 +208,21 @@ jobs:
       - name: Install dependencies
         run: npm i
 
-      - id: generate-artifact-name-suffix
-        run: echo "artifact-name-suffix="$(echo "${{ matrix.theme }}" | sed "s/ /_/g") >> "$GITHUB_OUTPUT"
+      - id: generate-artifact-name
+        run: echo "artifact-name="$(echo "${{ matrix.theme }}" | sed "s/ /_/g") >> "$GITHUB_OUTPUT"
 
       - name: Download test reports
         uses: actions/download-artifact@v4
         with:
-          path: ./test/Functional/all-test-reports-${{ steps.generate-artifact-name-suffix.outputs.artifact-name-suffix }}
-          pattern: playwright-report-${{ steps.generate-artifact-name-suffix.outputs.artifact-name-suffix }}-*
+          path: ./test/Functional/all-test-reports-${{ steps.generate-artifact-name.outputs.artifact-name }}
+          pattern: playwright-report-${{ steps.generate-artifact-name.outputs.artifact-name }}-*
           merge-multiple: true
 
       - name: Merge test reports
-        run: npx playwright merge-reports --reporter html ./all-test-reports-${{ steps.generate-artifact-name-suffix.outputs.artifact-name-suffix }}
+        run: npx playwright merge-reports --reporter html ./all-test-reports-${{ steps.generate-artifact-name.outputs.artifact-name }}
 
       - name: Upload merged test report
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ steps.generate-artifact-name-suffix.outputs.artifact-name-suffix }}
+          name: playwright-report-${{ steps.generate-artifact-name.outputs.artifact-name }}
           path: ./test/Functional/playwright-report
