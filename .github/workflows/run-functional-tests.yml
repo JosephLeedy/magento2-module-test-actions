@@ -15,7 +15,7 @@ jobs:
         shard-index: [1, 2, 3, 4]
         shard-count: [4]
 
-    timeout-minutes: 120
+    timeout-minutes: 240
 
     runs-on: ubuntu-latest
 
