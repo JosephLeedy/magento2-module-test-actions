@@ -166,6 +166,7 @@ jobs:
             --shard=${{ matrix.shard-index }}/${{ matrix.shard-count }}
 
       - id: generate-artifact-name-suffix
+        if: ${{ !cancelled() }}
         run: echo "artifact-name-suffix="$(echo "${{ matrix.theme }}" | sed "s/ /_/g") >> "$GITHUB_OUTPUT"
 
       - name: Upload test report
